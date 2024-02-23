@@ -48,13 +48,14 @@ func switchFallthroughExample() {
 	score := 6
 
 	switch {
-	case score == 8 :
+	case score == 8:
 		println("You are excellent")
-		
-	case score == 3:
+
+	case (score < 8) && (score > 5):
 		println("You are average")
 		fallthrough
 	case score > 3 && score < 5:
 		println("You are good")
+	}
 
 }
