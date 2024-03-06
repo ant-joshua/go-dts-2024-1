@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type Employee struct {
@@ -178,23 +177,27 @@ func (c *EmployeeController) UpdateEmployee(ctx *gin.Context) {
 func (c *EmployeeController) DeleteEmployee(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	_, err := uuid.Parse(id)
+	sqlStatement := `DELETE FROM employee WHERE employee_id = $1`
+
+	result, err := c.DB.Exec(sqlStatement, id)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	// for i, emp := range employees {
-	// 	if emp.ID == id {
-	// 		// employees = append(employees[:i], employees[i+1:]...)
+	count, err := result.RowsAffected()
 
-	// 		employees = slices.Delete(employees, i, 1)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
-	// 		ctx.JSON(http.StatusOK, gin.H{"message": "Employee deleted"})
-	// 		return
-	// 	}
-	// }
+	if count == 0 {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("Employee with id %s not found", id)})
+		return
+	}
 
-	ctx.JSON(http.StatusNotFound, gin.H{"error": "Employee not found"})
+	ctx.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("Employee with id %s has been deleted", id)})
+
 }
