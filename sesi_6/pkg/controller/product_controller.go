@@ -29,7 +29,18 @@ func (p *ProductController) Routes(r *gin.RouterGroup) {
 
 func (p *ProductController) GetAllProduct(ctx *gin.Context) {
 
-	products, err := p.service.GetAllProduct()
+	var request models.GetListProductRequest
+
+	err := ctx.ShouldBindQuery(&request)
+
+	fmt.Printf("%+v", request)
+
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	products, err := p.service.GetAllProduct(request)
 
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})

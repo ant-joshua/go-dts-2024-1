@@ -15,11 +15,22 @@ func NewProductService(gorm *gorm.DB) *ProductService {
 	return &ProductService{gorm: gorm}
 }
 
-func (p *ProductService) GetAllProduct() ([]models.Product, error) {
+func (p *ProductService) GetAllProduct(request models.GetListProductRequest) ([]models.Product, error) {
 
 	var products []models.Product
 
-	err := p.gorm.Find(&products).Error
+	findProducts := p.gorm
+
+	if request.Name != nil {
+
+		findProducts = findProducts.Where("product_name ILIKE ?", fmt.Sprintf("%%%s%%%%", *request.Name))
+	}
+
+	if request.StartPrice != nil && request.EndPrice != nil {
+		findProducts = findProducts.Where("product_price BETWEEN ? AND ?", *request.StartPrice, *request.EndPrice)
+	}
+
+	err := findProducts.Find(&products).Error
 
 	if err != nil {
 		return nil, err
