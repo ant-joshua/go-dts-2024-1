@@ -5,31 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sesi_6/pkg/models"
 
 	"github.com/gin-gonic/gin"
 )
-
-type Employee struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Age      int    `json:"age"`
-	Division string `json:"division"`
-}
-
-type CreateEmployeeRequest struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required"`
-	Age      int    `json:"age" binding:"required"`
-	Division string `json:"division" binding:"required"`
-}
-
-type UpdateEmployeeRequest struct {
-	Name     string `json:"name"`
-	Age      int    `json:"age"`
-	Division string `json:"division"`
-	Email    string `json:"email"`
-}
 
 type EmployeeController struct {
 	DB *sql.DB
@@ -65,10 +44,10 @@ func (c *EmployeeController) GetEmployeeList(ctx *gin.Context) {
 		return
 	}
 
-	var employees []Employee
+	var employees []models.Employee
 
 	for rows.Next() {
-		var employee Employee
+		var employee models.Employee
 
 		err = rows.Scan(&employee.ID, &employee.Name, &employee.Email, &employee.Age, &employee.Division)
 
@@ -98,7 +77,7 @@ func (c *EmployeeController) GetEmployee(ctx *gin.Context) {
 
 	sqlStatement := `SELECT * FROM employee where employee_id = $1`
 
-	var employee Employee
+	var employee models.Employee
 
 	err := c.DB.QueryRow(sqlStatement, id).Scan(&employee.ID, &employee.Name, &employee.Email, &employee.Age, &employee.Division)
 
@@ -125,9 +104,9 @@ func (c *EmployeeController) GetEmployee(ctx *gin.Context) {
 // @Success      200  {object}  Employee
 // @Router       /api/employees [post]
 func (c *EmployeeController) CreateEmployee(ctx *gin.Context) {
-	var request CreateEmployeeRequest
+	var request models.CreateEmployeeRequest
 
-	var employee Employee
+	var employee models.Employee
 
 	err := ctx.ShouldBindJSON(&request)
 
@@ -151,7 +130,7 @@ func (c *EmployeeController) CreateEmployee(ctx *gin.Context) {
 func (c *EmployeeController) UpdateEmployee(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	var request UpdateEmployeeRequest
+	var request models.UpdateEmployeeRequest
 
 	err := ctx.ShouldBindJSON(&request)
 
@@ -162,7 +141,7 @@ func (c *EmployeeController) UpdateEmployee(ctx *gin.Context) {
 
 	sqlStatement := `UPDATE employee SET full_name = $1, age = $2, division = $3, email = $4 WHERE employee_id = $5 returning *`
 
-	var employee Employee
+	var employee models.Employee
 
 	err = c.DB.QueryRow(sqlStatement, request.Name, request.Age, request.Division, request.Email, id).Scan(&employee.ID, &employee.Name, &employee.Email, &employee.Age, &employee.Division)
 
