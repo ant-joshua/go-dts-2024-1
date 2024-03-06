@@ -1,0 +1,108 @@
+basePath: /api/v1
+definitions:
+  controller.Employee:
+    properties:
+      age:
+        type: integer
+      division:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  controller.HttpError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /api/employees:
+    get:
+      consumes:
+      - application/json
+      description: Get All Employe List
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.Employee'
+        "404":
+          description: 'error 404" example({"code": 404, "message": "Employee not
+            found"})'
+          schema:
+            $ref: '#/definitions/controller.HttpError'
+        "500":
+          description: 'error 500" example({"code": 500, "message": "Internal Server
+            Error"})'
+          schema:
+            $ref: '#/definitions/controller.HttpError'
+      summary: Get All Employe List
+      tags:
+      - Employee
+    post:
+      consumes:
+      - application/json
+      description: Crete Employe
+      parameters:
+      - description: Employee Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.Employee'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.Employee'
+      summary: Crete Employe
+      tags:
+      - Employee
+  /api/employees/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Employe By ID
+      parameters:
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.Employee'
+      summary: Get Employe By ID
+      tags:
+      - Employee
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

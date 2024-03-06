@@ -15,6 +15,18 @@ type Employee struct {
 	Division string `json:"division"`
 }
 
+type CreateEmployeeRequest struct {
+	Name     string `json:"name" binding:"required"`
+	Age      int    `json:"age" binding:"required"`
+	Division string `json:"division" binding:"required"`
+}
+
+type UpdateEmployeeRequest struct {
+	Name     string `json:"name"`
+	Age      int    `json:"age"`
+	Division string `json:"division"`
+}
+
 var employees = []Employee{
 	{ID: "123e4567-e89b-12d3-a456-426614174000", Name: "John Doe", Age: 25, Division: "Engineering"},
 	{ID: "123e4567-e89b-12d3-a456-426614174001", Name: "Jane Doe", Age: 30, Division: "Marketing"},
@@ -33,10 +45,29 @@ func (c *EmployeeController) Routes(r *gin.RouterGroup) {
 	routeGroup.DELETE("/:id", c.DeleteEmployee)
 }
 
+// GetEmployee godoc
+// @Summary      Get All Employe List
+// @Description  Get All Employe List
+// @Tags         Employee
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  Employee
+// @Response      404  {object}  HttpError false "error 404" example({"code": 404, "message": "Employee not found"})
+// @Response      500  {object}  HttpError false "error 500" example({"code": 500, "message": "Internal Server Error"})
+// @Router       /api/employees [get]
 func (c *EmployeeController) GetEmployeeList(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, employees)
 }
 
+// GetEmployee godoc
+// @Summary      Get Employe By ID
+// @Description  Get Employe By ID
+// @Tags         Employee
+// @Accept       json
+// @Produce      json
+// @Param        id  path  string  true  "Employee ID"
+// @Success      200  {object}  Employee
+// @Router       /api/employees/{id} [get]
 func (c *EmployeeController) GetEmployee(ctx *gin.Context) {
 	id := ctx.Param("id")
 
@@ -50,6 +81,15 @@ func (c *EmployeeController) GetEmployee(ctx *gin.Context) {
 	ctx.JSON(http.StatusNotFound, gin.H{"error": "Employee not found"})
 }
 
+// CreateEmployee godoc
+// @Summary      Crete Employe
+// @Description  Crete Employe
+// @Tags         Employee
+// @Accept       json
+// @Produce      json
+// @Param 		 request  body Employee  true  "Employee Data"
+// @Success      200  {object}  Employee
+// @Router       /api/employees [post]
 func (c *EmployeeController) CreateEmployee(ctx *gin.Context) {
 	var employee Employee
 
