@@ -14,7 +14,7 @@ func GormInit(sqlDB *sql.DB) *gorm.DB {
 		Conn: sqlDB,
 	}), &gorm.Config{})
 
-	db.AutoMigrate(&models.Product{})
+	db.AutoMigrate(&models.Product{}, &models.Category{})
 
 	if err != nil {
 		log.Fatalf("Error when connect to database: %v", err)

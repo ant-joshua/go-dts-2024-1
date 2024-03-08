@@ -11,9 +11,10 @@ type Product struct {
 	Name        string    `json:"name" gorm:"column:product_name"`
 	Price       int       `json:"price" gorm:"column:product_price"`
 	RetailPrice int       `json:"retail_price" gorm:"column:retail_price"`
-	CategoryID  int       `json:"category" gorm:"column:category_id;not null"`
+	CategoryID  int       `json:"category_id" gorm:"column:category_id;not null"`
 	CreatedAt   time.Time `json:"created_at" gorm:"column:created_at"`
 	UpdatedAt   time.Time `json:"updated_at" gorm:"column:updated_at"`
+	Category    *Category `json:"category" gorm:"foreignKey:CategoryID;references:ID"`
 }
 
 func (p *Product) BeforeUpdate(tx *gorm.DB) (err error) {

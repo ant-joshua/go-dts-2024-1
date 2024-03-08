@@ -30,7 +30,7 @@ func (p *ProductService) GetAllProduct(request models.GetListProductRequest) ([]
 		findProducts = findProducts.Where("product_price BETWEEN ? AND ?", *request.StartPrice, *request.EndPrice)
 	}
 
-	err := findProducts.Find(&products).Error
+	err := findProducts.Preload("Category").Find(&products).Error
 
 	if err != nil {
 		return nil, err
