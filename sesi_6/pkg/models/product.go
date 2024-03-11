@@ -38,11 +38,17 @@ type GetListProductRequest struct {
 }
 
 type CreateProductRequest struct {
-	Name  string `json:"name" binding:"required"`
-	Price int    `json:"price" binding:"required"`
+	Name       string                  `json:"name" binding:"required"`
+	Price      int                     `json:"price" binding:"required"`
+	Categories []CreateCategoryRequest `json:"categories" binding:"required"`
+}
+
+type CreateCategoryRequest struct {
+	Name string `json:"name" binding:"required"`
 }
 
 type UpdateProductRequest struct {
-	Name  string `json:"name" binding:"required"`
-	Price int    `json:"price" binding:"required"`
+	Name       string `json:"name" `
+	Price      int    `json:"price" `
+	CategoryID *int   `json:"category_id"`
 }
