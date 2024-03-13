@@ -53,5 +53,9 @@ func StartServer(db *sql.DB, gorm *gorm.DB) *gin.Engine {
 	productController := controller.NewProductController(productService)
 	productController.Routes(api)
 
+	userService := service.NewUserService(gorm)
+	userController := controller.NewUserController(userService)
+	userController.Routes(api)
+
 	return r
 }
